@@ -8,11 +8,19 @@ using System.Web;
 using System.Web.Mvc;
 using IdentityServer3.Core;
 using IdentityServer3.Core.Extensions;
+using Id.Models;
 
 namespace Id.Controllers
 {
     public class EulaController : Controller
     {
+        private ISSDBContext _context;
+
+        public EulaController()
+        {
+            _context = new ISSDBContext();
+        }
+
         [Route("core/eula")]
         [HttpGet]
         public async Task<ActionResult> Index()
@@ -43,8 +51,10 @@ namespace Id.Controllers
             {
                 // update the "database" for our users with the outcome
                 var subject = partial_user.GetSubjectId();
-                var user = EulaAtLoginUserService.Users.Single(x => x.Subject == subject);
+                //var user = EulaAtLoginUserService.Users.Single(x => x.Id.ToString() == subject);
+                var user = _context.Users.Single(x => x.Id.ToString() == subject);
                 user.AcceptedEula = true;
+                _context.SaveChanges();
 
                 // find the URL to continue with the process to the issue the token to the RP
                 var resumeUrl = await ctx.Environment.GetPartialLoginResumeUrlAsync();
