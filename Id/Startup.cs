@@ -33,11 +33,7 @@ namespace Id
                 var userService = new EulaAtLoginUserService();
 
                 factory.UserService = new Registration<IUserService>(resolver => userService);
-
-                var viewOptions = new DefaultViewServiceOptions();
-                viewOptions.Stylesheets.Add("/Content/Site.css");
-                viewOptions.CacheViews = false;
-                factory.ConfigureDefaultViewService(viewOptions);
+                factory.ViewService = new Registration<IViewService, CustomViewService>();
 
                 var options = new IdentityServerOptions
                 {
@@ -46,8 +42,11 @@ namespace Id
                     SigningCertificate = LoadCertificate(),
                     Factory = factory,
 
-                AuthenticationOptions = new IdentityServer3.Core.Configuration.AuthenticationOptions
+                    AuthenticationOptions = new IdentityServer3.Core.Configuration.AuthenticationOptions
                     {
+                        EnablePostSignOutAutoRedirect = true,
+                        EnableSignOutPrompt = false,
+                        RequireSignOutPrompt = false,
                         CookieOptions = new IdentityServer3.Core.Configuration.CookieOptions()
                         {
                             AllowRememberMe = true,

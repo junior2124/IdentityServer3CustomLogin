@@ -28,6 +28,7 @@ namespace Id.IdentityServer
                 },
                 new Client
                 {
+                    Enabled = true,
                     ClientName = "MVC Client",
                     ClientId = "mvc",
                     Flow = Flows.Implicit,
@@ -36,8 +37,14 @@ namespace Id.IdentityServer
                     {
                         "https://localhost:44367/"
                     },
-                    AllowAccessToAllScopes = true
+                    PostLogoutRedirectUris = new List<string>
+                    {
+                        "https://localhost:44367/Home/Contact/"
+                    },
+                    LogoutUri = "https://localhost:44367/Home/Contact/",
+                    LogoutSessionRequired = true,
 
+                    AllowAccessToAllScopes = true,
                 },
                 new Client
                 {

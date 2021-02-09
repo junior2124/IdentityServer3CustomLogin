@@ -25,17 +25,16 @@ namespace IdentityClient
             var roleClaims = claimsPrincipal.Claims.Where(x => x.Type == "Role").ToList();
             List<string> userClaimRolesList = UserClaimRoles.Split(',').ToList();
 
-            if (claimsPrincipal != null && claimsPrincipal.Identities.Count() > 0)
+            if (claimsPrincipal != null && claimsPrincipal.Identities.Count() > 0  && claimsPrincipal.Claims != null)
             {
-                foreach (Claim roleClaim in roleClaims) 
+                foreach (string userClaimRoleVal in userClaimRolesList)
                 {
-                    foreach (string userClaimRoleVal in userClaimRolesList)
+                    var validClaim = roleClaims.Where(x => x.Value == userClaimRoleVal).ToList();
+                    
+                    if (validClaim.Count > 0)
                     {
-                        if(roleClaim.Value == userClaimRoleVal)
-                        {
-                            isValid = true;
-                            break;
-                        }
+                        isValid = true;
+                        break;
                     }
                 }
             }

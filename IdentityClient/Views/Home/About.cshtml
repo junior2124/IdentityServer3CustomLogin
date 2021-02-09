@@ -1,9 +1,37 @@
 ﻿@model IEnumerable<System.Security.Claims.Claim>
 
-<dl>
-    @foreach(var claim in Model)
-    {
-        <dt>@claim.Type</dt>
-        <dt>@claim.Value</dt>
+<style>
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
     }
-</dl>
+    th {
+        font-size: 20px;
+    }
+    th, td {
+        /*padding: 5px;*/
+        padding: 5px 35px 5px 5px;
+        text-align: left;
+    }
+</style>
+
+<table style="width:40%">
+    <tr>
+        <th>Claim Type</th>
+        <th colspan="2">Claim Value</th>
+    </tr>
+
+    @foreach (var claim in Model)
+    {
+        <tr>
+            <td style="font-weight: bold;">
+                @claim.Type
+            </td>
+            <td>
+                @claim.Value
+            </td>
+        </tr>
+    }
+
+</table>
+    

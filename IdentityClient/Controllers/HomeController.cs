@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Owin.Security;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -14,7 +15,7 @@ namespace IdentityClient.Controllers
             return View();
         }
 
-        [AuthAttribute(UserClaimRoles = "Admin")]
+        [AuthAttribute(UserClaimRoles = "Member,Admin")]
         public ActionResult About()
         {
             return View((User as ClaimsPrincipal).Claims);
@@ -31,7 +32,7 @@ namespace IdentityClient.Controllers
         {
             Request.GetOwinContext().Authentication.SignOut();
 
-            return RedirectToAction("Index");
+            return RedirectToAction("/");
         }
     }
 }
