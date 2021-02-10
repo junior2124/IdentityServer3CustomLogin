@@ -15,7 +15,8 @@ namespace IdentityClient.Controllers
             return View();
         }
 
-        [AuthAttribute(UserClaimRoles = "Member,Admin")]
+        [Auth(UserClaimRoles = "Member,Admin")]
+        //[Authorize(Roles = "Admin")]
         public ActionResult About()
         {
             return View((User as ClaimsPrincipal).Claims);

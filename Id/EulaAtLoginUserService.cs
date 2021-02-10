@@ -61,7 +61,8 @@ namespace Id
         public override Task AuthenticateLocalAsync(LocalAuthenticationContext context)
         {
             //var user = Users.SingleOrDefault(x => x.Username == context.UserName && x.Password == context.Password);
-            var user = _context.Users.SingleOrDefault(x => x.Username == context.UserName && x.Password == context.Password);
+            var encryptedPW = General.AesEncrypt(context.Password, ConstantVars.IISAesSalt, ConstantVars.IISAesPassword);
+            var user = _context.Users.SingleOrDefault(x => x.Username == context.UserName && x.Password == encryptedPW);
             if (user != null)
             {
                 if (user.AcceptedEula)

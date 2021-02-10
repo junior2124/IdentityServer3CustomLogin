@@ -42,8 +42,8 @@ namespace IdentityClient
                         var id = n.AuthenticationTicket.Identity;
 
                         // we want to keep first name, last name, subject and roles
-                        var givenName = id.FindFirst("GivenName");
-                        var familyName = id.FindFirst("FamilyName");
+                         var givenName = id.FindFirst("GivenName");
+                        // var familyName = id.FindFirst("FamilyName");
                         var sub = id.FindFirst("Subject");
                         var roles = id.FindAll("Role");
 
@@ -54,7 +54,7 @@ namespace IdentityClient
                             Constants.ClaimTypes.Role);
 
                         nid.AddClaim(givenName);
-                        nid.AddClaim(familyName);
+                        //nid.AddClaim(familyName);
                         nid.AddClaim(sub);
                         nid.AddClaims(roles);
 

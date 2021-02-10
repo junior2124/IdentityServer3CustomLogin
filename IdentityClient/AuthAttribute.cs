@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Web;
+using System.Net;
 using System.Web.Mvc;
+using System.Web.Routing;
 
 namespace IdentityClient
 {
@@ -12,6 +14,8 @@ namespace IdentityClient
     public class AuthAttribute : AuthorizeAttribute
     {
         public string UserClaimRoles { get; set; }  //comma string of claims
+
+        public bool IsAPI { get; set; }
 
         protected override bool AuthorizeCore(HttpContextBase httpContext)
         {
@@ -41,5 +45,46 @@ namespace IdentityClient
 
             return base.AuthorizeCore(httpContext) && isValid;
         }
-     }
+
+        protected override void HandleUnauthorizedRequest(System.Web.Mvc.AuthorizationContext filterContext)
+        {
+            if (filterContext == null)
+            {
+                throw new ArgumentNullException("filterContext");
+            }
+
+            //Intercept results where person is authenticated but still doesn't have permissions
+            if (filterContext.RequestContext.HttpContext.User.Identity.IsAuthenticated)
+            {
+                if (IsAPI)
+                {
+
+                    filterContext.Result = new JsonResult
+                    {
+                        Data = new { Message = "Your session has died a terrible and gruesome death" },
+                        JsonRequestBehavior = JsonRequestBehavior.AllowGet
+                    };
+                    filterContext.HttpContext.Response.StatusCode = 401;
+                    filterContext.HttpContext.Response.StatusDescription = "Humans and robots must authenticate";
+                    filterContext.HttpContext.Response.SuppressFormsAuthenticationRedirect = true;
+
+                //    filterContext.RequestContext.HttpContext.Response.ClearContent();
+                //    filterContext.Result = new HttpStatusCodeResult(401);
+                    return;
+                }
+
+                filterContext.Result = new RedirectResult("/Home");
+                return;
+            }
+
+            //context.Result = new RedirectToRouteResult(
+            //                       new RouteValueDictionary
+            //                       {
+            //                           { "action", "Contact" },
+            //                           { "controller", "Home" }
+            //                       }); 
+
+            base.HandleUnauthorizedRequest(filterContext);
+        }
+    }
 }
