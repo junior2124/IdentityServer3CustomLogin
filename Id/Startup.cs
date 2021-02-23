@@ -7,6 +7,7 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OpenIdConnect;
 using Owin;
 using System;
+using System.Configuration;
 using System.Collections.Generic;
 using IdentityServer3.Core.Services;
 using System.IdentityModel.Tokens.Jwt;
@@ -14,6 +15,7 @@ using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
 using System.Web.Helpers;
 using IdentityServer3.Core.Services.Default;
+using Id.Extensions;
 
 [assembly: OwinStartup(typeof(Id.Startup))]
 
@@ -23,24 +25,16 @@ namespace Id
     {
         public void Configuration(IAppBuilder app)
         {
+            string connectionString = ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+
             app.Map("/core", coreApp =>
             {
-                var factory = new IdentityServerServiceFactory()
-                       // .UseInMemoryUsers(Users.Get()) 
-                        .UseInMemoryClients(Clients.Get())
-                        .UseInMemoryScopes(Scopes.Get());
-
-                var userService = new EulaAtLoginUserService();
-
-                factory.UserService = new Registration<IUserService>(resolver => userService);
-                factory.ViewService = new Registration<IViewService, CustomViewService>();
-
                 var options = new IdentityServerOptions
                 {
                     SiteName = "IdentityServer3 - Custom Login Page",
 
                     SigningCertificate = LoadCertificate(),
-                    Factory = factory,
+                    Factory = new IdentityServerServiceFactory().Configure(connectionString),
 
                     AuthenticationOptions = new IdentityServer3.Core.Configuration.AuthenticationOptions
                     {
