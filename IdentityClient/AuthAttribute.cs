@@ -59,18 +59,22 @@ namespace IdentityClient
                 if (IsAPI)
                 {
 
-                    filterContext.Result = new JsonResult
-                    {
-                        Data = new { Message = "Your session has died a terrible and gruesome death" },
-                        JsonRequestBehavior = JsonRequestBehavior.AllowGet
-                    };
-                    filterContext.HttpContext.Response.StatusCode = 401;
-                    filterContext.HttpContext.Response.StatusDescription = "Humans and robots must authenticate";
-                    filterContext.HttpContext.Response.SuppressFormsAuthenticationRedirect = true;
+                    filterContext.HttpContext.Response.StatusCode = (int)HttpStatusCode.Unauthorized;
+                    filterContext.HttpContext.Response.End();
+                    return;
+
+                    //filterContext.Result = new JsonResult
+                    //{
+                    //    Data = new { Message = "Your session has died a terrible and gruesome death" },
+                    //    JsonRequestBehavior = JsonRequestBehavior.AllowGet
+                    //};
+                    //filterContext.HttpContext.Response.StatusCode = 401;
+                    //filterContext.HttpContext.Response.StatusDescription = "Humans and robots must authenticate";
+                    //filterContext.HttpContext.Response.SuppressFormsAuthenticationRedirect = true;
 
                 //    filterContext.RequestContext.HttpContext.Response.ClearContent();
                 //    filterContext.Result = new HttpStatusCodeResult(401);
-                    return;
+                //    return;
                 }
 
                 filterContext.Result = new RedirectResult("/Home");
